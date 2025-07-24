@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Lista de Compras</title>
+</head>
+
+<body>
+    <div class="content">
+        <div class="formulario">
+            <input type="text" placeholder="Nome Produtos"> <br>
+            <input type="number" placeholder="Quantidade"> <br>
+            <select name="unidade-medida" id="und_med">
+                <option value="und">und</option>
+                <option value="kg">KG</option>
+                <option value="litro">litro</option>
+                <option value="grama">grama</option>
+            </select>
+            <select name="tipo" id="tipo_produto">
+                <option value="alimentos_nao_pereciveis">Alimentos não pereciveis</option>
+                <option value="alimentos_pereciveis">Alimentos pereciveis</option>
+                <option value="limpeza">Limpeza</option>
+                <option value="laticinios">Laticinios</option>
+                <option value="bebidas">Bebidas</option>
+            </select>
+            <div class="btn">
+                <button type="button" onclick="adicionarLista()">Adicionar Produto</button>
+            </div>
+            <div class="lista-de-compras">
+                <h2>Lista de Compras</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome Produto</th>
+                            <th>Quantidade</th>
+                            <th>UND Medida</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Arroz</td>
+                            <td>2</td>
+                            <td>und</td>
+                            <td>Alimento não perecivel</td>
+                        </tr>
+                        <tr>
+                            <td>Feijão</td>
+                            <td>3</td>
+                            <td>und</td>
+                            <td>Alimento não perecivel</td>
+                        </tr>
+                        <tr>
+                            <td>sabao em po</td>
+                            <td>4</td>
+                            <td>und</td>
+                            <td>Limpeza</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <script src="script.js"></script>
+</body>
+
+</html>
