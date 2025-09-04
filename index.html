@@ -18,15 +18,6 @@
 
             <input type="text" id="nome_produto" placeholder="Nome do Produto"><br>
             <input type="number" id="quantidade_produto" placeholder="Quantidade"><br>
-            <input type="number" id="valor_produto" placeholder="Valor Unitário" step="0.01"><br>
-            <select name="tipo" id="tipo_produto">
-                <option value="alimentos_nao_pereciveis">Alimentos não perecíveis</option>
-                <option value="alimentos_pereciveis">Alimentos perecíveis</option>
-                <option value="limpeza">Limpeza</option>
-                <option value="laticinios">Laticínios</option>
-                <option value="bebidas">Bebidas</option>
-            </select>
-
 
             <div class="btn">
                 <button type="button" onclick="adicionarLista()">Adicionar Produto</button>
@@ -40,8 +31,8 @@
                     <tr>
                         <th>Nome Produto</th>
                         <th>Quantidade</th>
-                        <th>Valor Unitario</th>
-                        <th>Tipo</th>
+                        <th>Valor Unitário</th>
+                        <th>Valor Total</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
