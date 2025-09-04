@@ -11,7 +11,7 @@ body {
     background-color: rgb(58, 57, 61);
     padding: 25px;
     margin: 25px auto;
-    max-width: 680px;
+    max-width: 650px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -253,4 +253,45 @@ button.remover:hover {
 }
 
     
+}
+
+/* === ÍCONES DE AÇÃO === */
+span.editar,
+span.remover,
+span.salvar,
+span.cancelar {
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin: 0 5px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Remover */
+span.remover:hover {
+    color: #ff5c5c;
+    transform: scale(1.2);
+}
+
+/* Editar */
+span.editar:hover {
+    color: #1e90ff; /* azul */
+    transform: scale(1.2);
+}
+
+/* Salvar */
+span.salvar:hover {
+    color: #7CFC00; /* verde */
+    transform: scale(1.2);
+}
+
+/* Cancelar */
+span.cancelar:hover {
+    color: #cccccc; /* cinza claro */
+    transform: scale(1.2);
+}
+
+
+.confirmado {
+    background-color: #4caf50; /* verde */
+    color: white;
 }
