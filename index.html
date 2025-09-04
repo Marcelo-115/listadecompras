@@ -11,16 +11,14 @@
 <body>
     <div class="content">
         <div class="formulario">
+            <div class="valor-produtos">
+                <h3>Valor da compra</h3>
+                <p><span id="totalCompra">0.00</span> <span>R$</span></p>
+            </div>
+
             <input type="text" id="nome_produto" placeholder="Nome do Produto"><br>
             <input type="number" id="quantidade_produto" placeholder="Quantidade"><br>
-
-            <select name="unidade-medida" id="und_med">
-                <option value="und">und</option>
-                <option value="kg">kg</option>
-                <option value="litro">litro</option>
-                <option value="grama">grama</option>
-            </select>
-
+            <input type="number" id="valor_produto" placeholder="Valor Unitário" step="0.01"><br>
             <select name="tipo" id="tipo_produto">
                 <option value="alimentos_nao_pereciveis">Alimentos não perecíveis</option>
                 <option value="alimentos_pereciveis">Alimentos perecíveis</option>
@@ -28,6 +26,7 @@
                 <option value="laticinios">Laticínios</option>
                 <option value="bebidas">Bebidas</option>
             </select>
+
 
             <div class="btn">
                 <button type="button" onclick="adicionarLista()">Adicionar Produto</button>
@@ -41,7 +40,7 @@
                     <tr>
                         <th>Nome Produto</th>
                         <th>Quantidade</th>
-                        <th>UND Medida</th>
+                        <th>Valor Unitario</th>
                         <th>Tipo</th>
                         <th>Ações</th>
                     </tr>
