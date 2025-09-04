@@ -10,28 +10,22 @@ window.onload = function () {
 function adicionarLista() {
     const nomeProduto = document.getElementById('nome_produto').value.trim();
     const quantidade = parseFloat(document.getElementById('quantidade_produto').value.trim());
-    const valorUnitario = parseFloat(document.getElementById('valor_produto').value.trim());
-    const tipo = document.getElementById('tipo_produto').selectedOptions[0].text;
 
-    if (!nomeProduto || isNaN(quantidade) || quantidade <= 0 || isNaN(valorUnitario) || valorUnitario <= 0) {
-        alert("Por favor, preencha corretamente todos os campos.");
+    if (!nomeProduto || isNaN(quantidade) || quantidade <= 0) {
+        alert("Por favor, preencha corretamente os campos.");
         return;
     }
-
-    const valorTotal = quantidade * valorUnitario;
 
     const novoProduto = {
         nomeProduto,
         quantidade,
-        valorUnitario,
-        valorTotal,
-        tipo,
-        confirmado: false
+        valorUnitario: null,
+        valorTotal: null,
+        confirmado: false   // 👈 ADICIONADO
     };
 
     adicionarLinhaNaTabela(novoProduto);
     salvarNoLocalStorage(novoProduto);
-    atualizarTotal();
     limparFormulario();
 }
 
@@ -39,36 +33,109 @@ function adicionarLinhaNaTabela(produto) {
     const tabela = document.querySelector('table tbody');
     const novaLinha = document.createElement('tr');
 
-    if (produto.confirmado) {
-        novaLinha.style.backgroundColor = 'rgba(0, 128, 0, 0.3)';
-    }
+    // Se já estiver confirmado, aplica estilo
+    if (produto.confirmado) novaLinha.classList.add("confirmado");
 
     novaLinha.innerHTML = `
         <td>${produto.nomeProduto}</td>
         <td>${produto.quantidade}</td>
-        <td>R$ ${produto.valorUnitario.toFixed(2)}</td>
-        <td>${produto.tipo}</td>
+        <td>${produto.valorUnitario !== null ? "R$ " + produto.valorUnitario.toFixed(2) : "--"}</td>
+        <td>${produto.valorTotal !== null ? "R$ " + produto.valorTotal.toFixed(2) : "--"}</td>
         <td>
-            <span class="remover">❌</span>
             <span class="confirmar">✅</span>
+            <span class="editar">✏️</span>
+            <span class="remover">🗑️</span>
         </td>
     `;
 
-    // Evento para remover produto
-    novaLinha.querySelector('.remover').addEventListener('click', () => {
-        novaLinha.remove();
+    aplicarEventosLinha(novaLinha, produto);
+    tabela.appendChild(novaLinha);
+}
+
+function aplicarEventosLinha(linha, produto) {
+    // Confirmar
+    linha.querySelector('.confirmar').addEventListener('click', () => {
+        produto.confirmado = !produto.confirmado; // alterna estado
+        atualizarProdutoNoLocalStorage(produto);
+
+        if (produto.confirmado) {
+            linha.classList.add("confirmado");
+        } else {
+            linha.classList.remove("confirmado");
+        }
+    });
+
+    // Editar
+    linha.querySelector('.editar').addEventListener('click', () => {
+        editarProduto(linha, produto);
+    });
+
+    // Remover
+    linha.querySelector('.remover').addEventListener('click', () => {
+        linha.remove();
         removerDoLocalStorage(produto);
         atualizarTotal();
     });
+}
 
-    // Evento para confirmar produto
-    novaLinha.querySelector('.confirmar').addEventListener('click', () => {
-        produto.confirmado = true;
-        novaLinha.style.backgroundColor = 'rgba(0, 128, 0, 0.3)';
+
+function editarProduto(linha, produto) {
+    linha.innerHTML = `
+        <td>${produto.nomeProduto}</td>
+        <td><input type="number" value="${produto.quantidade}" min="1" id="editQtd"></td>
+        <td><input type="number" value="${produto.valorUnitario ?? ''}" step="0.01" min="0" id="editValor"></td>
+        <td>${produto.valorTotal !== null ? "R$ " + produto.valorTotal.toFixed(2) : "--"}</td>
+        <td>
+            <span class="salvar">✅</span>
+            <span class="cancelar">❌</span>
+        </td>
+    `;
+
+    // Salvar edição
+    linha.querySelector('.salvar').addEventListener('click', () => {
+        const novaQtd = parseFloat(linha.querySelector('#editQtd').value);
+        const novoValor = parseFloat(linha.querySelector('#editValor').value);
+
+        if (isNaN(novaQtd) || novaQtd <= 0 || isNaN(novoValor) || novoValor <= 0) {
+            alert("Quantidade e Valor devem ser válidos.");
+            return;
+        }
+
+        produto.quantidade = novaQtd;
+        produto.valorUnitario = novoValor;
+        produto.valorTotal = novaQtd * novoValor;
+
         atualizarProdutoNoLocalStorage(produto);
+
+        linha.innerHTML = `
+            <td>${produto.nomeProduto}</td>
+            <td>${produto.quantidade}</td>
+            <td>R$ ${produto.valorUnitario.toFixed(2)}</td>
+            <td>R$ ${produto.valorTotal.toFixed(2)}</td>
+            <td>
+                <span class="confirmar">✅</span>
+                <span class="editar">✏️</span>
+                <span class="remover">🗑️</span>
+            </td>
+        `;
+        aplicarEventosLinha(linha, produto);
+        atualizarTotal();
     });
 
-    tabela.appendChild(novaLinha);
+    // Cancelar edição
+    linha.querySelector('.cancelar').addEventListener('click', () => {
+        linha.innerHTML = `
+            <td>${produto.nomeProduto}</td>
+            <td>${produto.quantidade}</td>
+            <td>${produto.valorUnitario !== null ? "R$ " + produto.valorUnitario.toFixed(2) : "--"}</td>
+            <td>${produto.valorTotal !== null ? "R$ " + produto.valorTotal.toFixed(2) : "--"}</td>
+            <td>
+                <span class="editar">✏️</span>
+                <span class="remover">🗑️</span>
+            </td>
+        `;
+        aplicarEventosLinha(linha, produto);
+    });
 }
 
 function salvarNoLocalStorage(produto) {
@@ -79,46 +146,23 @@ function salvarNoLocalStorage(produto) {
 
 function removerDoLocalStorage(produtoRemovido) {
     let listaSalva = JSON.parse(localStorage.getItem("listaCompras")) || [];
-
-    listaSalva = listaSalva.filter(produto =>
-        !(
-            produto.nomeProduto === produtoRemovido.nomeProduto &&
-            produto.quantidade === produtoRemovido.quantidade &&
-            produto.valorUnitario === produtoRemovido.valorUnitario &&
-            produto.tipo === produtoRemovido.tipo
-        )
-    );
-
+    listaSalva = listaSalva.filter(p => p.nomeProduto !== produtoRemovido.nomeProduto);
     localStorage.setItem("listaCompras", JSON.stringify(listaSalva));
 }
 
 function atualizarProdutoNoLocalStorage(produtoAtualizado) {
     let listaSalva = JSON.parse(localStorage.getItem("listaCompras")) || [];
-
-    listaSalva = listaSalva.map(produto => {
-        if (
-            produto.nomeProduto === produtoAtualizado.nomeProduto &&
-            produto.quantidade === produtoAtualizado.quantidade &&
-            produto.valorUnitario === produtoAtualizado.valorUnitario &&
-            produto.tipo === produtoAtualizado.tipo
-        ) {
-            return produtoAtualizado;
-        }
-        return produto;
-    });
-
+    listaSalva = listaSalva.map(p => (p.nomeProduto === produtoAtualizado.nomeProduto ? produtoAtualizado : p));
     localStorage.setItem("listaCompras", JSON.stringify(listaSalva));
 }
 
 function limparFormulario() {
     document.getElementById('nome_produto').value = '';
     document.getElementById('quantidade_produto').value = '';
-    document.getElementById('valor_produto').value = '';
-    document.getElementById('tipo_produto').selectedIndex = 0;
 }
 
 function atualizarTotal() {
     const listaSalva = JSON.parse(localStorage.getItem("listaCompras")) || [];
-    const total = listaSalva.reduce((soma, produto) => soma + produto.valorTotal, 0);
+    const total = listaSalva.reduce((soma, produto) => soma + (produto.valorTotal || 0), 0);
     document.getElementById('totalCompra').textContent = total.toFixed(2);
 }
