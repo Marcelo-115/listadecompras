@@ -19,6 +19,26 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.valor-produtos{
+    height: 250px;
+    width: 90%;
+}
+
+.valor-produtos h3{
+    color: rgb(123, 255, 0);
+    font-size: 50px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.valor-produtos p{
+    font-size: 85px;
+    color: #7CFC00;
+    text-align: center;
+}
+
+
 input,
 select {
     padding: 5px;
@@ -177,7 +197,24 @@ button.remover:hover {
     th, td {
         font-size: 0.8em;
     }
-    
+    .valor-produtos{
+    height: 250px;
+    width: 90%;
+}
+
+.valor-produtos h3{
+    color: rgb(123, 255, 0);
+    font-size: 50px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.valor-produtos p{
+    font-size: 60px;
+    color: #7CFC00;
+    text-align: center;
+}
 
     
 }
@@ -196,6 +233,24 @@ button.remover:hover {
         font-size: 0.5em;
     }
     
+    .valor-produtos{
+    height: 250px;
+    width: 90%;
+}
+
+.valor-produtos h3{
+    color: rgb(123, 255, 0);
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.valor-produtos p{
+    font-size: 25px;
+    color: #7CFC00;
+    text-align: center;
+}
 
     
 }
