@@ -4,29 +4,34 @@ window.onload = function () {
     listaSalva.forEach(produto => {
         adicionarLinhaNaTabela(produto);
     });
+    atualizarTotal();
 };
 
 function adicionarLista() {
     const nomeProduto = document.getElementById('nome_produto').value.trim();
-    const quantidade = document.getElementById('quantidade_produto').value.trim();
-    const unidade = document.getElementById('und_med').value;
+    const quantidade = parseFloat(document.getElementById('quantidade_produto').value.trim());
+    const valorUnitario = parseFloat(document.getElementById('valor_produto').value.trim());
     const tipo = document.getElementById('tipo_produto').selectedOptions[0].text;
 
-    if (!nomeProduto || !quantidade || quantidade <= 0) {
+    if (!nomeProduto || isNaN(quantidade) || quantidade <= 0 || isNaN(valorUnitario) || valorUnitario <= 0) {
         alert("Por favor, preencha corretamente todos os campos.");
         return;
     }
 
+    const valorTotal = quantidade * valorUnitario;
+
     const novoProduto = {
         nomeProduto,
         quantidade,
-        unidade,
+        valorUnitario,
+        valorTotal,
         tipo,
-        confirmado: false // adicionando status de confirmação
+        confirmado: false
     };
 
     adicionarLinhaNaTabela(novoProduto);
     salvarNoLocalStorage(novoProduto);
+    atualizarTotal();
     limparFormulario();
 }
 
@@ -41,7 +46,7 @@ function adicionarLinhaNaTabela(produto) {
     novaLinha.innerHTML = `
         <td>${produto.nomeProduto}</td>
         <td>${produto.quantidade}</td>
-        <td>${produto.unidade}</td>
+        <td>R$ ${produto.valorUnitario.toFixed(2)}</td>
         <td>${produto.tipo}</td>
         <td>
             <span class="remover">❌</span>
@@ -53,6 +58,7 @@ function adicionarLinhaNaTabela(produto) {
     novaLinha.querySelector('.remover').addEventListener('click', () => {
         novaLinha.remove();
         removerDoLocalStorage(produto);
+        atualizarTotal();
     });
 
     // Evento para confirmar produto
@@ -78,7 +84,7 @@ function removerDoLocalStorage(produtoRemovido) {
         !(
             produto.nomeProduto === produtoRemovido.nomeProduto &&
             produto.quantidade === produtoRemovido.quantidade &&
-            produto.unidade === produtoRemovido.unidade &&
+            produto.valorUnitario === produtoRemovido.valorUnitario &&
             produto.tipo === produtoRemovido.tipo
         )
     );
@@ -93,7 +99,7 @@ function atualizarProdutoNoLocalStorage(produtoAtualizado) {
         if (
             produto.nomeProduto === produtoAtualizado.nomeProduto &&
             produto.quantidade === produtoAtualizado.quantidade &&
-            produto.unidade === produtoAtualizado.unidade &&
+            produto.valorUnitario === produtoAtualizado.valorUnitario &&
             produto.tipo === produtoAtualizado.tipo
         ) {
             return produtoAtualizado;
@@ -107,6 +113,12 @@ function atualizarProdutoNoLocalStorage(produtoAtualizado) {
 function limparFormulario() {
     document.getElementById('nome_produto').value = '';
     document.getElementById('quantidade_produto').value = '';
-    document.getElementById('und_med').selectedIndex = 0;
+    document.getElementById('valor_produto').value = '';
     document.getElementById('tipo_produto').selectedIndex = 0;
+}
+
+function atualizarTotal() {
+    const listaSalva = JSON.parse(localStorage.getItem("listaCompras")) || [];
+    const total = listaSalva.reduce((soma, produto) => soma + produto.valorTotal, 0);
+    document.getElementById('totalCompra').textContent = total.toFixed(2);
 }
